@@ -1,0 +1,59 @@
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+
+//Récupérer tous les utilisateurs
+export const getUsers = async(req, res )=>{
+  try{
+      const users = await prisma.user.findMany();
+    res.json(users);
+  }catch (err) {
+      console.error(err); 
+    res.status(500).json({ error: "Erreur serveur lors de la récupération des utilisateurs", details: err});
+  }   
+}
+// Créer un utilisateur
+export const createUsers = async (req, res) => {
+  const { name, email, password } = req.body;
+  try {
+    const newUser = await prisma.user.create({
+      data: { name, email, password },
+    });
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(400).json({ error: "Impossible de créer l’utilisateur", details: err });
+  }
+}
+// Récupérer un utilisateur via ID
+export const getUerById = async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: { id: parseInt(req.params.id) },
+  });
+  if (!user) {
+    return res.status(404).json({ error: "Utilisateur non trouvé", details: err});
+  }
+  res.json(user);
+};
+// Mettre à jour un utilisateur
+export const updateUser = async (req, res) =>{
+    try{
+    const { name, email, password } = req.body
+    const updatedUser = await prisma.user.update({
+        where:{id:parseInt(req.params.id)},
+        data: req.body,
+    });
+    res.json(updatedUser);
+ } catch(err){
+    res.status(404).json({error:"Utilisateur non trouvé", details: err});
+ }
+};
+// Supprimer un utilisateur
+export const deleteUser = async (req, res) => {
+  try {
+    const userId = await prisma.user.delete({
+      where: { id: parseInt(req.params.id) },
+    });
+    res.json({ message: "Utilisateur supprimé" });
+  } catch (err) {
+    res.status(404).json({ error: "Utilisateur non trouvé", details: err });
+  }
+};

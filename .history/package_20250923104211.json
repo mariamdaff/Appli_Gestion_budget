@@ -1,0 +1,20 @@
+{
+  "type": "module",
+   "scripts": {
+    "dev": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "name": "gestion_budget",
+  "version": "1.0.0",
+  "main": "index.js",
+ 
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.16.1",
+    "express": "^5.1.0",
+    "prisma": "^6.16.1"
+  }
+}

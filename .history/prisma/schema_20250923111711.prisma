@@ -1,0 +1,53 @@
+// Prisma schema file
+// Docs: https://pris.ly/d/prisma-schema
+
+// Générateur du client Prisma
+generator client {
+  provider = "prisma-client-js"
+  // Par défaut, le client sera généré dans node_modules/@prisma/client
+}
+
+// Source de données (PostgreSQL)
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") 
+}
+
+// Modèles
+model User {
+  id           Int          @id @default(autoincrement())
+  name         String
+  email        String       @unique
+  password     String
+  transactions Transaction[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Category {
+  id           Int          @id @default(autoincrement())
+  name         String
+  transactions Transaction[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Transaction {
+  id         Int              @id @default(autoincrement())
+  title      String
+  amount     Float
+  date       DateTime         @default(now())
+  type       TransactionType
+  user       User             @relation(fields: [userId], references: [id])
+  userId     Int
+  category   Category         @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}
+
+// Enum pour le type de transaction
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
